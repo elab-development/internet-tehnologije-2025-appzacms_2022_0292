@@ -1,5 +1,6 @@
 from app.extensions import db
 import enum
+from flask_login import UserMixin
 
 
 class UserRole(enum.Enum):
@@ -7,7 +8,7 @@ class UserRole(enum.Enum):
     USER = "user"
 
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
