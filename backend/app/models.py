@@ -68,3 +68,19 @@ class Site(db.Model):
 
     created_at = db.Column(db.DateTime, server_default=db.func.now(), nullable=False)
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now(), nullable=False)
+
+class Template(db.Model):
+    __tablename__ = "templates"
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    name = db.Column(db.String(120), nullable=False, unique=True, index=True)
+    
+    type = db.Column(db.String(20), nullable=False, server_default="both", index=True)
+    config = db.Column(db.Text, nullable=True)
+
+    created_by_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
+    created_by = db.relationship("User", backref=db.backref("templates_created", lazy=True))
+
+    created_at = db.Column(db.DateTime, server_default=db.func.now(), nullable=False)
+    updated_at = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now(), nullable=False)
