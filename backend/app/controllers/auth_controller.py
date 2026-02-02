@@ -29,8 +29,8 @@ def register():
     user = User(
         name=name,
         email=email,
-        password=generate_password_hash(password),
-        role=UserRole.USER
+        password=generate_password_hash(password, method="scrypt"),
+        role=UserRole.USER.value
     )
 
     db.session.add(user)
