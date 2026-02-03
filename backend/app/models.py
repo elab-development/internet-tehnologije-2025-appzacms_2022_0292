@@ -75,7 +75,7 @@ class Template(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     name = db.Column(db.String(120), nullable=False, unique=True, index=True)
-    
+
     type = db.Column(db.String(20), nullable=False, server_default="both", index=True)
     config = db.Column(db.Text, nullable=True)
 
@@ -84,3 +84,31 @@ class Template(db.Model):
 
     created_at = db.Column(db.DateTime, server_default=db.func.now(), nullable=False)
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now(), nullable=False)
+
+class Page(db.Model):
+    __tablename__ = "pages"
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    site_id = db.Column(db.Integer, db.ForeignKey("sites.id"), nullable=False, index=True)
+    site = db.relationship("Site", backref=db.backref("pages", lazy=True, cascade="all,delete-orphan"))
+
+    template_id = db.Column(db.Integer, db.ForeignKey("templates.id"), nullable=True, index=True)
+    template = db.relationship("Template", backref=db.backref("pages", lazy=True))
+
+    title = db.Column(db.String(200), nullable=False)
+    slug = db.Column(db.String(200), nullable=False, index=True)
+
+    content = db.Column(db.Text, nullable=False, server_default='{"version":1,"blocks":[]}')
+
+    status = db.Column(db.String(20), nullable=False, server_default="draft", index=True)  # draft/published
+
+    created_by_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
+    created_by = db.relationship("User", backref=db.backref("pages_created", lazy=True))
+
+    created_at = db.Column(db.DateTime, server_default=db.func.now(), nullable=False)
+    updated_at = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now(), nullable=False)
+
+    __table_args__ = (
+        db.UniqueConstraint("site_id", "slug", name="uq_pages_site_slug"),
+    )
