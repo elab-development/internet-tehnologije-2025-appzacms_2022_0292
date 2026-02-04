@@ -112,3 +112,32 @@ class Page(db.Model):
     __table_args__ = (
         db.UniqueConstraint("site_id", "slug", name="uq_pages_site_slug"),
     )
+
+class Post(db.Model):
+    __tablename__ = "posts"
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    site_id = db.Column(db.Integer, db.ForeignKey("sites.id"), nullable=False, index=True)
+    site = db.relationship("Site", backref=db.backref("posts", lazy=True, cascade="all,delete-orphan"))
+
+    template_id = db.Column(db.Integer, db.ForeignKey("templates.id"), nullable=True, index=True)
+    template = db.relationship("Template", backref=db.backref("posts", lazy=True))
+
+    author_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
+    author = db.relationship("User", backref=db.backref("posts", lazy=True))
+
+    title = db.Column(db.String(200), nullable=False)
+    slug = db.Column(db.String(200), nullable=False, index=True)
+
+    content = db.Column(db.Text, nullable=False, server_default='{"version":1,"blocks":[]}')
+
+    status = db.Column(db.String(20), nullable=False, server_default="draft", index=True)  # draft/published
+
+    created_at = db.Column(db.DateTime, server_default=db.func.now(), nullable=False)
+    updated_at = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now(), nullable=False)
+
+    __table_args__ = (
+        db.UniqueConstraint("site_id", "slug", name="uq_posts_site_slug"),
+    )
+
