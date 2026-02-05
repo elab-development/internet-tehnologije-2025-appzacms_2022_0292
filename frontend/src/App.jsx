@@ -1,12 +1,10 @@
-import { useEffect } from 'react';
-import { useAuthStore } from './stores/useAuthStore';
+import AppRouter from './router/AppRouter';
+import { AuthProvider } from './auth/AuthProvider';
 
 export default function App() {
-  const me = useAuthStore((s) => s.me);
-
-  useEffect(() => {
-    me();
-  }, [me]);
-
-  return <div>CMS</div>;
+  return (
+    <AuthProvider>
+      <AppRouter />
+    </AuthProvider>
+  );
 }
