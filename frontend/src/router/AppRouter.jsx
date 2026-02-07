@@ -7,10 +7,14 @@ import Login from '../pages/Login';
 import Register from '../pages/Register';
 import AuthGate from '../pages/AuthGate';
 import SiteHome from '../pages/SiteHome';
+
 import NewPage from '../pages/NewPage';
 import NewPost from '../pages/NewPost';
 import EditPage from '../pages/EditPage';
 import EditPost from '../pages/EditPost';
+
+import PagePreview from '../pages/PagePreview';
+import PostPreview from '../pages/PostPreview';
 
 import { GuestOnly } from '../auth/GuestOnly';
 import { RequireAuth } from '../auth/RequireAuth';
@@ -21,9 +25,13 @@ const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       { path: '/', element: <Home /> },
-      { path: '/:siteSlug', element: <SiteHome /> },
 
       { path: '/auth/guard', element: <AuthGate /> },
+
+      { path: '/:siteSlug/pages/:slug', element: <PagePreview /> },
+      { path: '/:siteSlug/posts/:slug', element: <PostPreview /> },
+
+      { path: '/:siteSlug', element: <SiteHome /> },
 
       // ADMIN ONLY (pages create + edit)
       {

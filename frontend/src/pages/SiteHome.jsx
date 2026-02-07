@@ -35,7 +35,6 @@ export default function SiteHome() {
     [sites, siteSlug],
   );
 
-  // kad imamo site, povuci pages+posts za taj site
   useEffect(() => {
     if (!site?.id) return;
     fetchPages({ siteId: site.id });
@@ -113,6 +112,14 @@ export default function SiteHome() {
                 </div>
 
                 <div className='mt-3 flex items-center gap-3'>
+                  <button
+                    className='text-sm underline'
+                    onClick={() => navigate(`/${site.slug}/pages/${p.slug}`)}
+                    type='button'
+                  >
+                    Preview
+                  </button>
+
                   {isAdmin ? (
                     <button
                       className='text-sm underline'
@@ -157,6 +164,14 @@ export default function SiteHome() {
                 </div>
 
                 <div className='mt-3 flex items-center gap-3'>
+                  <button
+                    className='text-sm underline'
+                    onClick={() => navigate(`/${site.slug}/posts/${p.slug}`)}
+                    type='button'
+                  >
+                    Preview
+                  </button>
+
                   {isLoggedIn ? (
                     <button
                       className='text-sm underline'
