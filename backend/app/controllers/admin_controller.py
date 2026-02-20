@@ -41,8 +41,48 @@ def _normalize_role(value: str):
 @admin_required
 def set_user_role(user_id: int):
     """
-    PUT /api/admin/users/<id>/role
-    body: { "role": "admin" | "user" }
+    Set user role (admin)
+    ---
+    tags:
+      - Admin
+    security:
+      - cookieAuth: []
+    parameters:
+      - in: path
+        name: user_id
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          required: [role]
+          properties:
+            role:
+              type: string
+              enum: ["admin", "user"]
+              example: "admin"
+    responses:
+      200:
+        description: Role updated
+        schema:
+          type: object
+          properties:
+            message: { type: string }
+            user: { $ref: '#/definitions/UserPublic' }
+      400:
+        description: Invalid role or self-demotion
+        schema: { $ref: '#/definitions/Error' }
+      404:
+        description: User not found
+        schema: { $ref: '#/definitions/Error' }
+      401:
+        description: Not authenticated
+        schema: { $ref: '#/definitions/Error' }
+      403:
+        description: Forbidden (not admin)
+        schema: { $ref: '#/definitions/Error' }
     """
     u = db.session.get(User, user_id)
     if not u:
@@ -66,11 +106,45 @@ def set_user_role(user_id: int):
 @admin_required
 def list_users():
     """
-    GET /api/admin/users
-    Opcioni query params:
-      - q: pretraga po name/email (contains, case-insensitive)
-      - role: admin|user
-      - sort: createdAt_desc | createdAt_asc | name_asc | name_desc (opciono)
+    List users (admin)
+    ---
+    tags:
+      - Admin
+    security:
+      - cookieAuth: []
+    parameters:
+      - in: query
+        name: q
+        type: string
+        required: false
+        description: Search by name/email (contains)
+      - in: query
+        name: role
+        type: string
+        required: false
+        enum: ["admin", "user"]
+      - in: query
+        name: sort
+        type: string
+        required: false
+        enum: ["createdAt_desc", "createdAt_asc", "name_asc", "name_desc"]
+        default: "createdAt_desc"
+    responses:
+      200:
+        description: Users list
+        schema:
+          type: object
+          properties:
+            users:
+              type: array
+              items:
+                $ref: '#/definitions/UserPublic'
+      401:
+        description: Not authenticated
+        schema: { $ref: '#/definitions/Error' }
+      403:
+        description: Forbidden (not admin)
+        schema: { $ref: '#/definitions/Error' }
     """
     q = (request.args.get("q") or "").strip()
     role = (request.args.get("role") or "").strip().lower()
@@ -107,10 +181,24 @@ def list_users():
 @admin_required
 def overview():
     """
-    GET /api/admin/overview
-    Vraća osnovne statistike za dashboard/charts.
+    Admin overview (dashboard stats)
+    ---
+    tags:
+      - Admin
+    security:
+      - cookieAuth: []
+    responses:
+      200:
+        description: Overview payload for charts
+        schema:
+          $ref: '#/definitions/AdminOverviewResponse'
+      401:
+        description: Not authenticated
+        schema: { $ref: '#/definitions/Error' }
+      403:
+        description: Forbidden (not admin)
+        schema: { $ref: '#/definitions/Error' }
     """
-
     total_users = db.session.query(func.count(User.id)).scalar() or 0
     total_sites = db.session.query(func.count(Site.id)).scalar() or 0
     total_pages = db.session.query(func.count(Page.id)).scalar() or 0
