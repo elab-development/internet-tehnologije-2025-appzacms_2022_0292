@@ -3,6 +3,7 @@ from app.routes.site_routes import site_bp
 from app.routes.template_routes import template_bp
 from app.routes.page_routes import page_bp
 from app.routes.post_routes import post_bp
+from app.routes.admin_routes import admin_bp
 
 def register_routes(app):
     app.register_blueprint(auth_bp)
@@ -10,3 +11,4 @@ def register_routes(app):
     app.register_blueprint(template_bp)
     app.register_blueprint(page_bp)
     app.register_blueprint(post_bp)
+    app.register_blueprint(admin_bp)
