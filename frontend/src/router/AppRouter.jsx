@@ -16,6 +16,8 @@ import EditPost from '../pages/EditPost';
 import PagePreview from '../pages/PagePreview';
 import PostPreview from '../pages/PostPreview';
 
+import AdminDashboard from '../pages/AdminDashboard';
+
 import { GuestOnly } from '../auth/GuestOnly';
 import { RequireAuth } from '../auth/RequireAuth';
 import { RequireAdmin } from '../auth/RequireAdmin';
@@ -37,6 +39,7 @@ const router = createBrowserRouter([
       {
         element: <RequireAdmin />,
         children: [
+          { path: '/admin', element: <AdminDashboard /> },
           { path: '/:siteSlug/pages/new', element: <NewPage /> },
           { path: '/pages/:id/edit', element: <EditPage /> },
         ],

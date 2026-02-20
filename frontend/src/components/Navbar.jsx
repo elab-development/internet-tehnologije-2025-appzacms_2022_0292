@@ -8,6 +8,7 @@ import {
   FiUserPlus,
   FiLogOut,
   FiUser,
+  FiBarChart2,
 } from 'react-icons/fi';
 import { useAuthStore } from '../stores/useAuthStore';
 
@@ -83,6 +84,10 @@ export default function Navbar() {
                   <span className='text-gray-500'>{user.role}</span>
                 </div>
 
+                {user?.role === 'admin' && (
+                  <NavItem to='/admin' icon={FiBarChart2} label='Admin' />
+                )}
+
                 <button
                   onClick={handleLogout}
                   className='flex items-center gap-2 rounded px-3 py-2 text-sm text-gray-700 hover:bg-gray-100'
@@ -138,6 +143,15 @@ export default function Navbar() {
                       Role: {user.role}
                     </div>
                   </div>
+
+                  {user?.role === 'admin' && (
+                    <NavItem
+                      to='/admin'
+                      icon={FiBarChart2}
+                      label='Admin'
+                      onClick={close}
+                    />
+                  )}
 
                   <button
                     onClick={handleLogout}
